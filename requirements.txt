@@ -1,0 +1,4 @@
+requests
+pandas
+neo4j
+pyspark

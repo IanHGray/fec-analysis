@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  jupyter:
+    container_name: jupyter
+    build:
+      context: .
+      args:
+        hadoop_version: 3.3
+        spark_version: 3.3.2
+    ports:
+      - "8888:8888"
+    restart: "always"
+    env_file:
+      - jupyter.env
+    volumes:
+      - ./src:/home/jovyan/src
+  neo4j:
+    image: neo4j:latest
+    platform: linux/x86_64
+    hostname: neo4j
+    container_name: myneo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+      - "7473:7473"
+    volumes:
+      - ./neo4j/plugins:/plugins
+      - shared_data:/var/lib/neo4j/import
+    environment:
+      NEO4J_AUTH: ${NEO_AUTH}
+      dbms_memory_transaction_global__max__size: 3GB
+      NEO4J_dbms_memory_transaction_global__max__size: 3GB
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+volumes:
+  shared_data:
